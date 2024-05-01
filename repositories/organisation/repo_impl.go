@@ -2,6 +2,7 @@ package organisation
 
 import (
 	"context"
+	"database/sql"
 	"fmt"
 
 	"github.com/sample-crud-app/repositories/organisation/models"
@@ -34,35 +35,42 @@ func (r *RepoImpl) DeleteByID(id int) (bool, error) {
 
 // GetOrganizationByID implements repointer.RepoInter.
 func (r *RepoImpl) GetByID(id int) (*models.Organization, error) {
-	organisation := new(models.Organization)
-	err := utils.DB.NewSelect().Model(organisation).Where("id=?", id).Scan(context.Background())
-	// row := utils.DB.QueryRow("select * from organization where id=$1", id)
-	// fmt.Println(id)
-	if err != nil {
-		fmt.Println(err)
+	organization := new(models.Organization)
+	// err := utils.DB.NewSelect().Model(organisation).Where("id=?", id).Scan(context.Background())
+	row := utils.DB.QueryRow("select * from organizations where id=?", id)
+	if err := row.Scan(&organization.ID,&organization.LegalName, &organization.Alias, &organization.Country, &organization.Currency, &organization.Gstreg, &organization.Gstin, &organization.State, &organization.Pan); err != nil {
+		if err == sql.ErrNoRows {
+			return nil, fmt.Errorf("organizationByID %d: no such organization", id)
+		}
 		return nil, err
 	}
-	return organisation, nil
+	return organization, nil
+	// fmt.Println(id)
+	// if err != nil {
+	// 	fmt.Println(err)
+	// 	return nil, err
+	// }
+	// return organisation, nil
 }
 
 // GetOrganizationByName implements repointer.RepoInter.
 func (r *RepoImpl) GetByName(name string) (*models.Organization, error) {
-	// var organization models.Organization
-	// row := utils.DB.QueryRow("select * from organizations where legal_name=?", name)
-	// if err := row.Scan(&organization.LegalName, &organization.Alias, &organization.Country, &organization.Currency, &organization.Gstreg, &organization.Gstin, &organization.State, &organization.Pan, &organization.ID); err != nil {
-	// 	if err == sql.ErrNoRows {
-	// 		return nil, fmt.Errorf("organizationByName %s: no such organization", name)
-	// 	}
-	// 	return nil, err
-	// }
-	// return &organization, nil
-	organisation := new(models.Organization)
-	err := utils.DB.NewSelect().Model(organisation).Where("legal_name=?", name).Scan(context.Background())
-	if err != nil {
-		fmt.Println(err)
+	var organization models.Organization
+	row := utils.DB.QueryRow("select * from organizations where legal_name=?", name)
+	if err := row.Scan(&organization.ID,&organization.LegalName, &organization.Alias, &organization.Country, &organization.Currency, &organization.Gstreg, &organization.Gstin, &organization.State, &organization.Pan); err != nil {
+		if err == sql.ErrNoRows {
+			return nil, fmt.Errorf("organizationByName %s: no such organization", name)
+		}
 		return nil, err
 	}
-	return organisation, nil
+	return &organization, nil
+	// organisation := new(models.Organization)
+	// err := utils.DB.NewSelect().Model(organisation).Where("legal_name=?", name).Scan(context.Background())
+	// if err != nil {
+	// 	fmt.Println(err)
+	// 	return nil, err
+	// }
+	// return organisation, nil
 }
 
 // UpdateOrganizationByID implements repointer.RepoInter.

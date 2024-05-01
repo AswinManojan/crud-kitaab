@@ -12,7 +12,7 @@ type SVCImpl struct {
 }
 
 // GetAllUsers implements svcinter.SVCInter.
-func (s *SVCImpl) GetAll() ([]*models.User, error) {
+func (s *SVCImpl) GetAll() ([]models.User, error) {
 	users, err := s.Repo.GetAll()
 	if err != nil {
 		fmt.Println(err, "- svc layer")

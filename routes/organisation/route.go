@@ -15,7 +15,7 @@ func (r Route) Routes() {
 	r.Router.R.GET("/getorganizationbyid/:id", r.Handler.GetByID)
 	r.Router.R.GET("/getorganizationbyname", r.Handler.GetByName)
 	r.Router.R.DELETE("/deleteorganizationbyid/:id", r.Handler.DeleteByID)
-	r.Router.R.PATCH("/updateorganization/:id", r.Handler.Update)
+	r.Router.R.PUT("/updateorganization/:id", r.Handler.Update)
 }
 
 func NewRoutes(router *utils.ServerStruct, handler *organisation.Handler) *Route {
