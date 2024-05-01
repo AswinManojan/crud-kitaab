@@ -1,4 +1,4 @@
-package controllers
+package organisation
 
 import (
 	"log"
@@ -10,17 +10,17 @@ import (
 	"github.com/sample-crud-app/services/organisation"
 )
 
-type OrganizationHandler struct {
-	SVC *services.SVCImpl
+type Handler struct {
+	SVC *organisation.SVCImpl
 }
 
-func (o *OrganizationHandler) CreateOrganizationHandler(c *gin.Context) {
+func (o *Handler) Create(c *gin.Context) {
 	var orgn *models.Organization
 	if err := c.BindJSON(&orgn); err != nil {
 		log.Println("Error binding the JSON data")
 		return
 	}
-	res, err := o.SVC.CreateOrganization(orgn)
+	res, err := o.SVC.Create(orgn)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status":  "failed",
@@ -36,7 +36,7 @@ func (o *OrganizationHandler) CreateOrganizationHandler(c *gin.Context) {
 	})
 }
 
-func (o *OrganizationHandler) UpdateOrganizationHandler(c *gin.Context) {
+func (o *Handler) Update(c *gin.Context) {
 	strid := c.Param("id")
 	id, _ := strconv.Atoi(strid)
 	var orgn *models.Organization
@@ -44,7 +44,7 @@ func (o *OrganizationHandler) UpdateOrganizationHandler(c *gin.Context) {
 		log.Println("Error binding the JSON data")
 		return
 	}
-	res, err := o.SVC.UpdateOrganization(id, orgn)
+	res, err := o.SVC.Update(id, orgn)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status":  "failed",
@@ -59,12 +59,12 @@ func (o *OrganizationHandler) UpdateOrganizationHandler(c *gin.Context) {
 		"data":    res,
 	})
 }
-func (o *OrganizationHandler) GetOrganizationByIDHandler(c *gin.Context) {
+func (o *Handler) GetByID(c *gin.Context) {
 	strid := c.Param("id")
 	// fmt.Println(strid)
 	id, _ := strconv.Atoi(strid)
 	// fmt.Println(id)
-	res, err := o.SVC.GetOrganizationByID(id)
+	res, err := o.SVC.GetByID(id)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status":  "failed",
@@ -79,10 +79,10 @@ func (o *OrganizationHandler) GetOrganizationByIDHandler(c *gin.Context) {
 		"data":    res,
 	})
 }
-func (o *OrganizationHandler) GetOrganizationByNameHandler(c *gin.Context) {
+func (o *Handler) GetByName(c *gin.Context) {
 	name := c.DefaultQuery("name", "")
 	// fmt.Println(name)
-	res, err := o.SVC.GetOrganizationByName(name)
+	res, err := o.SVC.GetByName(name)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status":  "failed",
@@ -97,10 +97,10 @@ func (o *OrganizationHandler) GetOrganizationByNameHandler(c *gin.Context) {
 		"data":    res,
 	})
 }
-func (o *OrganizationHandler) DeleteOrganizaionByIDHandler(c *gin.Context) {
+func (o *Handler) DeleteByID(c *gin.Context) {
 	strid := c.Param("id")
 	id, _ := strconv.Atoi(strid)
-	res, err := o.SVC.DeleteOrganizaionByID(id)
+	res, err := o.SVC.DeleteByID(id)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status":  "failed",
@@ -115,6 +115,6 @@ func (o *OrganizationHandler) DeleteOrganizaionByIDHandler(c *gin.Context) {
 		"data":    res,
 	})
 }
-func NewOrganizationHandler(svc *services.SVCImpl) *OrganizationHandler {
-	return &OrganizationHandler{SVC: svc}
+func NewOrganizationHandler(svc *organisation.SVCImpl) *Handler {
+	return &Handler{SVC: svc}
 }

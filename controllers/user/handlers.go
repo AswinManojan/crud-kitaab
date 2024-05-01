@@ -1,4 +1,4 @@
-package handler
+package user
 
 import (
 	"log"
@@ -10,17 +10,17 @@ import (
 	"github.com/sample-crud-app/services/user"
 )
 
-type UserHandler struct {
-	SVC *svc.SVCImpl
+type Handler struct {
+	SVC *user.SVCImpl
 }
 
-func (u *UserHandler) CreateUserHandler(c *gin.Context) {
+func (u *Handler) Create(c *gin.Context) {
 	var user *models.User
 	if err := c.BindJSON(&user); err != nil {
 		log.Println("Error binding the JSON data")
 		return
 	}
-	res, err := u.SVC.CreateUser(user)
+	res, err := u.SVC.Create(user)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status":  "failed",
@@ -36,10 +36,10 @@ func (u *UserHandler) CreateUserHandler(c *gin.Context) {
 	})
 }
 
-func (u *UserHandler) GetUserByIDHandler(c *gin.Context) {
+func (u *Handler) GetByID(c *gin.Context) {
 	strid := c.Param("id")
 	id, _ := strconv.Atoi(strid)
-	res, err := u.SVC.GetUserByID(id)
+	res, err := u.SVC.GetByID(id)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status":  "failed",
@@ -54,9 +54,9 @@ func (u *UserHandler) GetUserByIDHandler(c *gin.Context) {
 		"data":    res,
 	})
 }
-func (u *UserHandler) GetUserByNameHandler(c *gin.Context) {
+func (u *Handler) GetByName(c *gin.Context) {
 	name := c.DefaultQuery("name", "")
-	res, err := u.SVC.GetUserByName(name)
+	res, err := u.SVC.GetByName(name)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status":  "failed",
@@ -72,8 +72,8 @@ func (u *UserHandler) GetUserByNameHandler(c *gin.Context) {
 	})
 }
 
-func (u *UserHandler) GetAllUsersHandler(c *gin.Context) {
-	res, err := u.SVC.GetAllUsers()
+func (u *Handler) GetAll(c *gin.Context) {
+	res, err := u.SVC.GetAll()
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status":  "failed",
@@ -89,6 +89,6 @@ func (u *UserHandler) GetAllUsersHandler(c *gin.Context) {
 	})
 }
 
-func NewUserHandler(svc *svc.SVCImpl) *UserHandler {
-	return &UserHandler{SVC: svc}
+func NewUserHandler(svc *user.SVCImpl) *Handler {
+	return &Handler{SVC: svc}
 }

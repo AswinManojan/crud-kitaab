@@ -12,7 +12,7 @@ type RepoImpl struct {
 }
 
 // CreateOrganization implements repointer.RepoInter.
-func (r *RepoImpl) CreateOrganization(organization *models.Organization) (*models.Organization, error) {
+func (r *RepoImpl) Create(organization *models.Organization) (*models.Organization, error) {
 	// _, err := utils.DB.Exec("INSERT INTO Organization (legal_name,Alias,Country,Currency,Gstreg,gstin,state,pan) values ($1,$2,$3,$4,$5,$6,$7,$8)", organization.LegalName, organization.Alias, organization.Country, organization.Currency, organization.Gstreg, organization.Gstin, organization.State, organization.Pan)
 	_, err := utils.DB.NewInsert().Model(organization).Exec(context.Background())
 	if err != nil {
@@ -23,7 +23,7 @@ func (r *RepoImpl) CreateOrganization(organization *models.Organization) (*model
 }
 
 // DeleteOrganizaionByID implements repointer.RepoInter.
-func (r *RepoImpl) DeleteOrganizaionByID(id int) (bool, error) {
+func (r *RepoImpl) DeleteByID(id int) (bool, error) {
 	_, err := utils.DB.NewDelete().Model(&models.Organization{}).Where("id=?", id).Exec(context.Background())
 	if err != nil {
 		fmt.Println("Error while deleting organization, repo layer")
@@ -33,7 +33,7 @@ func (r *RepoImpl) DeleteOrganizaionByID(id int) (bool, error) {
 }
 
 // GetOrganizationByID implements repointer.RepoInter.
-func (r *RepoImpl) GetOrganizationByID(id int) (*models.Organization, error) {
+func (r *RepoImpl) GetByID(id int) (*models.Organization, error) {
 	organisation := new(models.Organization)
 	err := utils.DB.NewSelect().Model(organisation).Where("id=?", id).Scan(context.Background())
 	// row := utils.DB.QueryRow("select * from organization where id=$1", id)
@@ -46,9 +46,9 @@ func (r *RepoImpl) GetOrganizationByID(id int) (*models.Organization, error) {
 }
 
 // GetOrganizationByName implements repointer.RepoInter.
-func (r *RepoImpl) GetOrganizationByName(name string) (*models.Organization, error) {
+func (r *RepoImpl) GetByName(name string) (*models.Organization, error) {
 	// var organization models.Organization
-	// row := utils.DB.QueryRow("select * from organization where legal_name=$1", name)
+	// row := utils.DB.QueryRow("select * from organizations where legal_name=?", name)
 	// if err := row.Scan(&organization.LegalName, &organization.Alias, &organization.Country, &organization.Currency, &organization.Gstreg, &organization.Gstin, &organization.State, &organization.Pan, &organization.ID); err != nil {
 	// 	if err == sql.ErrNoRows {
 	// 		return nil, fmt.Errorf("organizationByName %s: no such organization", name)
@@ -66,7 +66,7 @@ func (r *RepoImpl) GetOrganizationByName(name string) (*models.Organization, err
 }
 
 // UpdateOrganizationByID implements repointer.RepoInter.
-func (r *RepoImpl) UpdateOrganization(id int, organization *models.Organization) (*models.Organization, error) {
+func (r *RepoImpl) Update(id int, organization *models.Organization) (*models.Organization, error) {
 	// fmt.Println(organization)
 	_, err := utils.DB.NewUpdate().Model(organization).Set("legal_name=?", organization.LegalName).Set("alias=?", organization.Alias).
 		Set("country=?", organization.Country).

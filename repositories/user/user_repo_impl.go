@@ -1,4 +1,4 @@
-package repo
+package user
 
 import (
 	"context"
@@ -12,7 +12,7 @@ type RepoImpl struct {
 }
 
 // GetAllUsers implements repointer.RepoInter.
-func (r *RepoImpl) GetAllUsers() ([]*models.User, error) {
+func (r *RepoImpl) GetAll() ([]*models.User, error) {
 	var users []*models.User
 	err := utils.DB.NewSelect().Model(&users).Scan(context.Background())
 	if err != nil {
@@ -22,7 +22,7 @@ func (r *RepoImpl) GetAllUsers() ([]*models.User, error) {
 }
 
 // AddUser implements repointer.RepoInter.
-func (r *RepoImpl) AddUser(user *models.User) (*models.User, error) {
+func (r *RepoImpl) Add(user *models.User) (*models.User, error) {
 	_, err := utils.DB.NewInsert().Model(user).Exec(context.Background())
 	if err != nil {
 		fmt.Println(err, "- repo layer")
@@ -32,7 +32,7 @@ func (r *RepoImpl) AddUser(user *models.User) (*models.User, error) {
 }
 
 // GetUserByID implements repointer.RepoInter.
-func (r *RepoImpl) GetUserByID(id int) (*models.User, error) {
+func (r *RepoImpl) GetByID(id int) (*models.User, error) {
 	user := new(models.User)
 	err := utils.DB.NewSelect().Model(user).Where("id=?", id).Scan(context.Background())
 	if err != nil {
@@ -43,7 +43,7 @@ func (r *RepoImpl) GetUserByID(id int) (*models.User, error) {
 }
 
 // GetUserByName implements repointer.RepoInter.
-func (r *RepoImpl) GetUserByName(name string) (*models.User, error) {
+func (r *RepoImpl) GetByName(name string) (*models.User, error) {
 	user := new(models.User)
 	err := utils.DB.NewSelect().Model(user).Where("name=?", name).Scan(context.Background())
 	if err != nil {

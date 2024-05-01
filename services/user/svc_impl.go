@@ -1,4 +1,4 @@
-package svc
+package user
 
 import (
 	"fmt"
@@ -12,8 +12,8 @@ type SVCImpl struct {
 }
 
 // GetAllUsers implements svcinter.SVCInter.
-func (s *SVCImpl) GetAllUsers() ([]*models.User, error) {
-	users, err := s.Repo.GetAllUsers()
+func (s *SVCImpl) GetAll() ([]*models.User, error) {
+	users, err := s.Repo.GetAll()
 	if err != nil {
 		fmt.Println(err, "- svc layer")
 		return nil, err
@@ -22,8 +22,8 @@ func (s *SVCImpl) GetAllUsers() ([]*models.User, error) {
 }
 
 // AddUser implements svcinter.SVCInter.
-func (s *SVCImpl) CreateUser(user *models.User) (*models.User, error) {
-	user, err := s.Repo.AddUser(user)
+func (s *SVCImpl) Create(user *models.User) (*models.User, error) {
+	user, err := s.Repo.Add(user)
 	if err != nil {
 		fmt.Println(err, "- in svc layer")
 		return nil, err
@@ -32,8 +32,8 @@ func (s *SVCImpl) CreateUser(user *models.User) (*models.User, error) {
 }
 
 // GetUserByID implements svcinter.SVCInter.
-func (s *SVCImpl) GetUserByID(id int) (*models.User, error) {
-	user, err := s.Repo.GetUserByID(id)
+func (s *SVCImpl) GetByID(id int) (*models.User, error) {
+	user, err := s.Repo.GetByID(id)
 	if err != nil {
 		fmt.Println(err, "- svc layer")
 		return nil, err
@@ -42,8 +42,8 @@ func (s *SVCImpl) GetUserByID(id int) (*models.User, error) {
 }
 
 // GetUserByName implements svcinter.SVCInter.
-func (s *SVCImpl) GetUserByName(name string) (*models.User, error) {
-	user, err := s.Repo.GetUserByName(name)
+func (s *SVCImpl) GetByName(name string) (*models.User, error) {
+	user, err := s.Repo.GetByName(name)
 	if err != nil {
 		fmt.Println(err, "- svc layer")
 		return nil, err

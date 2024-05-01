@@ -1,4 +1,4 @@
-package services
+package organisation
 
 import (
 	"encoding/json"
@@ -31,7 +31,7 @@ type SVCImpl struct {
 }
 
 // CreateOrganization implements svcinter.SVCInter.
-func (s *SVCImpl) CreateOrganization(organization *models.Organization) (*models.Organization, error) {
+func (s *SVCImpl) Create(organization *models.Organization) (*models.Organization, error) {
 	status := GSTVerifier(organization.Gstin)
 	if status != "200 OK" {
 		errmessage := fmt.Sprintf("Error - Invalid GST Number - %s", status)
@@ -57,7 +57,7 @@ func (s *SVCImpl) CreateOrganization(organization *models.Organization) (*models
 		return nil, errors.New("error - Invalid State Name provided")
 	}
 
-	org, err := s.Repo.CreateOrganization(organization)
+	org, err := s.Repo.Create(organization)
 	if err != nil {
 		fmt.Println("Error creating organization in svc layer")
 		return nil, err
@@ -66,8 +66,8 @@ func (s *SVCImpl) CreateOrganization(organization *models.Organization) (*models
 }
 
 // DeleteOrganizaionByID implements svcinter.SVCInter.
-func (s *SVCImpl) DeleteOrganizaionByID(id int) (bool, error) {
-	result, err := s.Repo.DeleteOrganizaionByID(id)
+func (s *SVCImpl) DeleteByID(id int) (bool, error) {
+	result, err := s.Repo.DeleteByID(id)
 	if err != nil {
 		fmt.Println("Error deleting organization in svc layer")
 		return result, err
@@ -76,8 +76,8 @@ func (s *SVCImpl) DeleteOrganizaionByID(id int) (bool, error) {
 }
 
 // GetOrganizationByID implements svcinter.SVCInter.
-func (s *SVCImpl) GetOrganizationByID(id int) (*models.Organization, error) {
-	org, err := s.Repo.GetOrganizationByID(id)
+func (s *SVCImpl) GetByID(id int) (*models.Organization, error) {
+	org, err := s.Repo.GetByID(id)
 	if err != nil {
 		fmt.Println("Error finding organization in svc layer")
 		fmt.Println(err)
@@ -87,8 +87,8 @@ func (s *SVCImpl) GetOrganizationByID(id int) (*models.Organization, error) {
 }
 
 // GetOrganizationByName implements svcinter.SVCInter.
-func (s *SVCImpl) GetOrganizationByName(name string) (*models.Organization, error) {
-	org, err := s.Repo.GetOrganizationByName(name)
+func (s *SVCImpl) GetByName(name string) (*models.Organization, error) {
+	org, err := s.Repo.GetByName(name)
 	if err != nil {
 		fmt.Println("Error finding organization in svc layer")
 		return nil, err
@@ -97,9 +97,9 @@ func (s *SVCImpl) GetOrganizationByName(name string) (*models.Organization, erro
 }
 
 // UpdateOrganization implements svcinter.SVCInter.
-func (s *SVCImpl) UpdateOrganization(id int, organization *models.Organization) (*models.Organization, error) {
+func (s *SVCImpl) Update(id int, organization *models.Organization) (*models.Organization, error) {
 	organization.ID = uint(id)
-	org, err := s.Repo.UpdateOrganization(id, organization)
+	org, err := s.Repo.Update(id, organization)
 	if err != nil {
 		fmt.Println("Error updating organization in svc layer")
 		return nil, err

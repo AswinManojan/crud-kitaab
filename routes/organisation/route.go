@@ -1,4 +1,4 @@
-package routes
+package organisation
 
 import (
 	"github.com/sample-crud-app/controllers/organisation"
@@ -7,18 +7,18 @@ import (
 
 type Route struct {
 	Router  *utils.ServerStruct
-	Handler *controllers.OrganizationHandler
+	Handler *organisation.Handler
 }
 
 func (r Route) Routes() {
-	r.Router.R.POST("/createorganization", r.Handler.CreateOrganizationHandler)
-	r.Router.R.GET("/getorganizationbyid/:id", r.Handler.GetOrganizationByIDHandler)
-	r.Router.R.GET("/getorganizationbyname", r.Handler.GetOrganizationByNameHandler)
-	r.Router.R.DELETE("/deleteorganizationbyid/:id", r.Handler.DeleteOrganizaionByIDHandler)
-	r.Router.R.PATCH("/updateorganization/:id", r.Handler.UpdateOrganizationHandler)
+	r.Router.R.POST("/createorganization", r.Handler.Create)
+	r.Router.R.GET("/getorganizationbyid/:id", r.Handler.GetByID)
+	r.Router.R.GET("/getorganizationbyname", r.Handler.GetByName)
+	r.Router.R.DELETE("/deleteorganizationbyid/:id", r.Handler.DeleteByID)
+	r.Router.R.PATCH("/updateorganization/:id", r.Handler.Update)
 }
 
-func NewRoutes(router *utils.ServerStruct, handler *controllers.OrganizationHandler) *Route {
+func NewRoutes(router *utils.ServerStruct, handler *organisation.Handler) *Route {
 	return &Route{
 		Router:  router,
 		Handler: handler,
