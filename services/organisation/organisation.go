@@ -7,7 +7,7 @@ import (
 	"io"
 	"net/http"
 
-	repo "github.com/sample-crud-app/repositories/organisation"
+	"github.com/sample-crud-app/repositories/organisation"
 	"github.com/sample-crud-app/repositories/organisation/models"
 	"github.com/sample-crud-app/repositories/user"
 )
@@ -27,20 +27,18 @@ type Response struct {
 	Success bool `json:"success"`
 }
 
-type SVCImpl struct {
-	Repo *repo.RepoImpl
-}
+var repository *organisation.OrganisationRepository
+var userRepository *user.UserRepository
+
+type OrganisationService struct{}
 
 // CreateOrganization implements svcinter.SVCInter.
-func (s *SVCImpl) Create(organization *models.Organization) (*models.Organization, error) {
-	if _, err := s.Repo.QueryByID(int(organization.ParentID)); organization.ParentID > 0 && err != nil {
-		fmt.Println(err)
+func (s *OrganisationService) Create(organization *models.Organization) (*models.Organization, error) {
+	if _, err := repository.QueryByID(int(organization.ParentID)); organization.ParentID > 0 && err != nil {
 		return nil, errors.New("no existing organisation for as the provided parent organisation")
 	}
-	_, err := user.NewRepoImpl().QueryByID(int(organization.UserID))
-	// fmt.Println(usr)
+	_, err := userRepository.QueryByID(int(organization.UserID))
 	if err != nil {
-		fmt.Println(err)
 		return nil, errors.New("no existing user for adding the organisation")
 	}
 	status := GSTVerifier(organization.Gstin)
@@ -68,63 +66,36 @@ func (s *SVCImpl) Create(organization *models.Organization) (*models.Organizatio
 		return nil, errors.New("error - Invalid State Name provided")
 	}
 
-	org, err := s.Repo.Create(organization)
+	org, err := repository.Create(organization)
 	if err != nil {
-		fmt.Println("Error creating organization in svc layer")
 		return nil, err
 	}
 	return org, nil
 }
 
 // DeleteOrganizaionByID implements svcinter.SVCInter.
-func (s *SVCImpl) Delete(id int) (bool, error) {
-	result, err := s.Repo.Delete(id)
-	if err != nil {
-		fmt.Println("Error deleting organization in svc layer")
-		return result, err
-	}
-	return result, nil
+func (s *OrganisationService) Delete(id int) (bool, error) {
+	return repository.Delete(id)
 }
 
 // GetOrganizationByID implements svcinter.SVCInter.
-func (s *SVCImpl) QueryByID(id int) (*models.Organization, error) {
-	org, err := s.Repo.QueryByID(id)
-	if err != nil {
-		fmt.Println("Error finding organization in svc layer")
-		fmt.Println(err)
-		return nil, err
-	}
-	return org, nil
+func (s *OrganisationService) QueryByID(id int) (*models.Organization, error) {
+	return repository.QueryByID(id)
 }
 
 // GetOrganizationByName implements svcinter.SVCInter.
-func (s *SVCImpl) QueryByName(name string) (*models.Organization, error) {
-	org, err := s.Repo.QueryByName(name)
-	if err != nil {
-		fmt.Println("Error finding organization in svc layer")
-		return nil, err
-	}
-	return org, nil
+func (s *OrganisationService) QueryByName(name string) (*models.Organization, error) {
+	return repository.QueryByName(name)
 }
 
-func (s *SVCImpl) QueryAll() ([]models.Organization, error) {
-	org, err := s.Repo.QueryAll()
-	if err != nil {
-		fmt.Println("Error finding organization in svc layer")
-		return nil, err
-	}
-	return org, nil
+func (s *OrganisationService) QueryAll() ([]models.Organization, error) {
+	return repository.QueryAll()
 }
 
 // UpdateOrganization implements svcinter.SVCInter.
-func (s *SVCImpl) Update(id int, organization *models.Organization) (*models.Organization, error) {
+func (s *OrganisationService) Update(id int, organization *models.Organization) (*models.Organization, error) {
 	organization.ID = uint(id)
-	org, err := s.Repo.Update(id, organization)
-	if err != nil {
-		fmt.Println("Error updating organization in svc layer")
-		return nil, err
-	}
-	return org, nil
+	return repository.Update(id, organization)
 }
 
 func GSTVerifier(gst string) string {
@@ -147,8 +118,4 @@ func GSTInfoFetch(gst string) Response {
 	body, _ := io.ReadAll(resp.Body)
 	json.Unmarshal(body, &response)
 	return response
-}
-
-func NewSVCImpl(repo *repo.RepoImpl) *SVCImpl {
-	return &SVCImpl{Repo: repo}
 }
