@@ -33,11 +33,11 @@ type SVCImpl struct {
 
 // CreateOrganization implements svcinter.SVCInter.
 func (s *SVCImpl) Create(organization *models.Organization) (*models.Organization, error) {
-	if _, err := s.Repo.GetByID(int(organization.ParentID)); organization.ParentID > 0 && err != nil {
+	if _, err := s.Repo.QueryByID(int(organization.ParentID)); organization.ParentID > 0 && err != nil {
 		fmt.Println(err)
 		return nil, errors.New("no existing organisation for as the provided parent organisation")
 	}
-	_, err := user.NewRepoImpl().GetByID(int(organization.UserID))
+	_, err := user.NewRepoImpl().QueryByID(int(organization.UserID))
 	// fmt.Println(usr)
 	if err != nil {
 		fmt.Println(err)
@@ -77,8 +77,8 @@ func (s *SVCImpl) Create(organization *models.Organization) (*models.Organizatio
 }
 
 // DeleteOrganizaionByID implements svcinter.SVCInter.
-func (s *SVCImpl) DeleteByID(id int) (bool, error) {
-	result, err := s.Repo.DeleteByID(id)
+func (s *SVCImpl) Delete(id int) (bool, error) {
+	result, err := s.Repo.Delete(id)
 	if err != nil {
 		fmt.Println("Error deleting organization in svc layer")
 		return result, err
@@ -87,8 +87,8 @@ func (s *SVCImpl) DeleteByID(id int) (bool, error) {
 }
 
 // GetOrganizationByID implements svcinter.SVCInter.
-func (s *SVCImpl) GetByID(id int) (*models.Organization, error) {
-	org, err := s.Repo.GetByID(id)
+func (s *SVCImpl) QueryByID(id int) (*models.Organization, error) {
+	org, err := s.Repo.QueryByID(id)
 	if err != nil {
 		fmt.Println("Error finding organization in svc layer")
 		fmt.Println(err)
@@ -98,8 +98,8 @@ func (s *SVCImpl) GetByID(id int) (*models.Organization, error) {
 }
 
 // GetOrganizationByName implements svcinter.SVCInter.
-func (s *SVCImpl) GetByName(name string) (*models.Organization, error) {
-	org, err := s.Repo.GetByName(name)
+func (s *SVCImpl) QueryByName(name string) (*models.Organization, error) {
+	org, err := s.Repo.QueryByName(name)
 	if err != nil {
 		fmt.Println("Error finding organization in svc layer")
 		return nil, err
@@ -107,8 +107,8 @@ func (s *SVCImpl) GetByName(name string) (*models.Organization, error) {
 	return org, nil
 }
 
-func (s *SVCImpl) GetAll() ([]models.Organization, error) {
-	org, err := s.Repo.GetAll()
+func (s *SVCImpl) QueryAll() ([]models.Organization, error) {
+	org, err := s.Repo.QueryAll()
 	if err != nil {
 		fmt.Println("Error finding organization in svc layer")
 		return nil, err

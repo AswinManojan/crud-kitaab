@@ -59,12 +59,12 @@ func (o *Handler) Update(c *gin.Context) {
 		"data":    res,
 	})
 }
-func (o *Handler) GetByID(c *gin.Context) {
+func (o *Handler) QueryByID(c *gin.Context) {
 	strid := c.Param("id")
 	// fmt.Println(strid)
 	id, _ := strconv.Atoi(strid)
 	// fmt.Println(id)
-	res, err := o.SVC.GetByID(id)
+	res, err := o.SVC.QueryByID(id)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status":  "failed",
@@ -79,9 +79,9 @@ func (o *Handler) GetByID(c *gin.Context) {
 		"data":    res,
 	})
 }
-func (o *Handler) GetByName(c *gin.Context) {
+func (o *Handler) QueryByName(c *gin.Context) {
 	name := c.DefaultQuery("name", "")
-	res, err := o.SVC.GetByName(name)
+	res, err := o.SVC.QueryByName(name)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status":  "failed",
@@ -96,8 +96,8 @@ func (o *Handler) GetByName(c *gin.Context) {
 		"data":    res,
 	})
 }
-func (o *Handler) GetAll(c *gin.Context) {
-	res, err := o.SVC.GetAll()
+func (o *Handler) QueryAll(c *gin.Context) {
+	res, err := o.SVC.QueryAll()
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status":  "failed",
@@ -112,10 +112,10 @@ func (o *Handler) GetAll(c *gin.Context) {
 		"data":    res,
 	})
 }
-func (o *Handler) DeleteByID(c *gin.Context) {
+func (o *Handler) Delete(c *gin.Context) {
 	strid := c.Param("id")
 	id, _ := strconv.Atoi(strid)
-	res, err := o.SVC.DeleteByID(id)
+	res, err := o.SVC.Delete(id)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status":  "failed",

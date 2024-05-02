@@ -24,7 +24,7 @@ func (r *RepoImpl) Create(organization *models.Organization) (*models.Organizati
 }
 
 // DeleteOrganizaionByID implements repointer.RepoInter.
-func (r *RepoImpl) DeleteByID(id int) (bool, error) {
+func (r *RepoImpl) Delete(id int) (bool, error) {
 	_, err := utils.DB.NewDelete().Model(&models.Organization{}).Where("id=?", id).Exec(context.Background())
 	if err != nil {
 		fmt.Println("Error while deleting organization, repo layer")
@@ -34,7 +34,7 @@ func (r *RepoImpl) DeleteByID(id int) (bool, error) {
 }
 
 // GetOrganizationByID implements repointer.RepoInter.
-func (r *RepoImpl) GetByID(id int) (*models.Organization, error) {
+func (r *RepoImpl) QueryByID(id int) (*models.Organization, error) {
 	organization := new(models.Organization)
 	// err := utils.DB.NewSelect().Model(organisation).Where("id=?", id).Scan(context.Background())
 	row := utils.DB.QueryRow("select * from organizations where id=?", id)
@@ -53,7 +53,7 @@ func (r *RepoImpl) GetByID(id int) (*models.Organization, error) {
 	// return organisation, nil
 }
 
-func (r *RepoImpl) GetAll() ([]models.Organization, error) {
+func (r *RepoImpl) QueryAll() ([]models.Organization, error) {
 	var organizations []models.Organization
 	rows, _ := utils.DB.Query("select * from organizations")
 	// fmt.Println(rows)
@@ -72,7 +72,7 @@ func (r *RepoImpl) GetAll() ([]models.Organization, error) {
 }
 
 // GetOrganizationByName implements repointer.RepoInter.
-func (r *RepoImpl) GetByName(name string) (*models.Organization, error) {
+func (r *RepoImpl) QueryByName(name string) (*models.Organization, error) {
 	var organization models.Organization
 	row := utils.DB.QueryRow("select * from organizations where legal_name=?", name)
 	if err := row.Scan(&organization.ID, &organization.LegalName, &organization.Alias, &organization.Country, &organization.Currency, &organization.Gstreg, &organization.Gstin, &organization.State, &organization.Pan, &organization.UserID, &organization.ParentID); err != nil {

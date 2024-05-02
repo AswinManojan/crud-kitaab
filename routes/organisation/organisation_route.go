@@ -11,12 +11,12 @@ type Route struct {
 }
 
 func (r Route) Routes() {
-	r.Router.R.POST("/createorganization", r.Handler.Create)
-	r.Router.R.GET("/getorganizationbyid/:id", r.Handler.GetByID)
-	r.Router.R.GET("/getorganizationbyname", r.Handler.GetByName)
-	r.Router.R.GET("/getallorganization", r.Handler.GetAll)
-	r.Router.R.DELETE("/deleteorganizationbyid/:id", r.Handler.DeleteByID)
-	r.Router.R.PUT("/updateorganization/:id", r.Handler.Update)
+	r.Router.R.POST("/organization", r.Handler.Create)
+	r.Router.R.GET("/organization/:id", r.Handler.QueryByID)
+	r.Router.R.GET("/organization", r.Handler.QueryByName)
+	r.Router.R.GET("/organisations", r.Handler.QueryAll)
+	r.Router.R.DELETE("/organization/:id", r.Handler.Delete)
+	r.Router.R.PUT("/organization/:id", r.Handler.Update)
 }
 
 func NewRoutes(router *utils.ServerStruct, handler *organisation.Handler) *Route {

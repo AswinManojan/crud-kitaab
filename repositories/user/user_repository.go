@@ -13,7 +13,7 @@ type RepoImpl struct {
 }
 
 // GetAllUsers implements repointer.RepoInter.
-func (r *RepoImpl) GetAll() ([]models.User, error) {
+func (r *RepoImpl) QueryAll() ([]models.User, error) {
 	var users []models.User
 	// err := utils.DB.NewSelect().Model(&users).Scan(context.Background())
 	// if err != nil {
@@ -35,7 +35,7 @@ func (r *RepoImpl) GetAll() ([]models.User, error) {
 }
 
 // AddUser implements repointer.RepoInter.
-func (r *RepoImpl) Add(user *models.User) (*models.User, error) {
+func (r *RepoImpl) Create(user *models.User) (*models.User, error) {
 	_, err := utils.DB.NewInsert().Model(user).Exec(context.Background())
 	if err != nil {
 		fmt.Println(err, "- repo layer")
@@ -45,7 +45,7 @@ func (r *RepoImpl) Add(user *models.User) (*models.User, error) {
 }
 
 // GetUserByID implements repointer.RepoInter.
-func (r *RepoImpl) GetByID(id int) (*models.User, error) {
+func (r *RepoImpl) QueryByID(id int) (*models.User, error) {
 	user := new(models.User)
 	// err := utils.DB.NewSelect().Model(user).Where("id=?", id).Scan(context.Background())
 	// if err != nil {
@@ -62,9 +62,26 @@ func (r *RepoImpl) GetByID(id int) (*models.User, error) {
 	}
 	return user, nil
 }
+func (r *RepoImpl) Delete(id int) (bool, error) {
+	_, err := utils.DB.NewDelete().Model(&models.User{}).Where("id=?", id).Exec(context.Background())
+	if err != nil {
+		fmt.Println("Error while deleting user, repo layer")
+		return false, err
+	}
+	return true, nil
+}
+
+func (r *RepoImpl) Update(id int, user *models.User) (*models.User, error) {
+	_, err := utils.DB.NewUpdate().Model(&models.User{}).Set("name=?", user.Name).Set("height=?", user.Height).Set("date=?", user.BirthDate).Where("id=?", id).Exec(context.Background())
+	if err != nil {
+		fmt.Println("Error while updating user, repo layer")
+		return nil, err
+	}
+	return user, nil
+}
 
 // GetUserByName implements repointer.RepoInter.
-func (r *RepoImpl) GetByName(name string) (*models.User, error) {
+func (r *RepoImpl) QueryByName(name string) (*models.User, error) {
 	user := new(models.User)
 	// err := utils.DB.NewSelect().Model(user).Where("name=?", name).Scan(context.Background())
 	// if err != nil {
