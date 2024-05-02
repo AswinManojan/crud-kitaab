@@ -12,13 +12,6 @@ import (
 	"github.com/uptrace/bun/driver/pgdriver"
 )
 
-// const (
-// 	host     = "localhost"
-// 	port     = 5432
-// 	user     = "postgres"
-// 	password = "password"
-// 	dbname   = "postgres"
-// )
 
 var DB *bun.DB
 
