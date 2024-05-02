@@ -14,6 +14,7 @@ func (r Route) Routes() {
 	r.Router.R.POST("/createorganization", r.Handler.Create)
 	r.Router.R.GET("/getorganizationbyid/:id", r.Handler.GetByID)
 	r.Router.R.GET("/getorganizationbyname", r.Handler.GetByName)
+	r.Router.R.GET("/getallorganization", r.Handler.GetAll)
 	r.Router.R.DELETE("/deleteorganizationbyid/:id", r.Handler.DeleteByID)
 	r.Router.R.PUT("/updateorganization/:id", r.Handler.Update)
 }

@@ -9,6 +9,7 @@ import (
 
 	repo "github.com/sample-crud-app/repositories/organisation"
 	"github.com/sample-crud-app/repositories/organisation/models"
+	"github.com/sample-crud-app/repositories/user"
 )
 
 type Address struct {
@@ -32,6 +33,16 @@ type SVCImpl struct {
 
 // CreateOrganization implements svcinter.SVCInter.
 func (s *SVCImpl) Create(organization *models.Organization) (*models.Organization, error) {
+	if _, err := s.Repo.GetByID(int(organization.ParentID)); organization.ParentID > 0 && err != nil {
+		fmt.Println(err)
+		return nil, errors.New("no existing organisation for as the provided parent organisation")
+	}
+	_, err := user.NewRepoImpl().GetByID(int(organization.UserID))
+	// fmt.Println(usr)
+	if err != nil {
+		fmt.Println(err)
+		return nil, errors.New("no existing user for adding the organisation")
+	}
 	status := GSTVerifier(organization.Gstin)
 	if status != "200 OK" {
 		errmessage := fmt.Sprintf("Error - Invalid GST Number - %s", status)
@@ -89,6 +100,15 @@ func (s *SVCImpl) GetByID(id int) (*models.Organization, error) {
 // GetOrganizationByName implements svcinter.SVCInter.
 func (s *SVCImpl) GetByName(name string) (*models.Organization, error) {
 	org, err := s.Repo.GetByName(name)
+	if err != nil {
+		fmt.Println("Error finding organization in svc layer")
+		return nil, err
+	}
+	return org, nil
+}
+
+func (s *SVCImpl) GetAll() ([]models.Organization, error) {
+	org, err := s.Repo.GetAll()
 	if err != nil {
 		fmt.Println("Error finding organization in svc layer")
 		return nil, err

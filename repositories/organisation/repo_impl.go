@@ -38,7 +38,7 @@ func (r *RepoImpl) GetByID(id int) (*models.Organization, error) {
 	organization := new(models.Organization)
 	// err := utils.DB.NewSelect().Model(organisation).Where("id=?", id).Scan(context.Background())
 	row := utils.DB.QueryRow("select * from organizations where id=?", id)
-	if err := row.Scan(&organization.ID,&organization.LegalName, &organization.Alias, &organization.Country, &organization.Currency, &organization.Gstreg, &organization.Gstin, &organization.State, &organization.Pan); err != nil {
+	if err := row.Scan(&organization.ID, &organization.LegalName, &organization.Alias, &organization.Country, &organization.Currency, &organization.Gstreg, &organization.Gstin, &organization.State, &organization.Pan, &organization.UserID, &organization.ParentID); err != nil {
 		if err == sql.ErrNoRows {
 			return nil, fmt.Errorf("organizationByID %d: no such organization", id)
 		}
@@ -53,11 +53,29 @@ func (r *RepoImpl) GetByID(id int) (*models.Organization, error) {
 	// return organisation, nil
 }
 
+func (r *RepoImpl) GetAll() ([]models.Organization, error) {
+	var organizations []models.Organization
+	rows, _ := utils.DB.Query("select * from organizations")
+	// fmt.Println(rows)
+	for rows.Next() {
+		var organization models.Organization
+		if err := rows.Scan(&organization.ID, &organization.LegalName, &organization.Alias, &organization.Country, &organization.Currency, &organization.Gstreg, &organization.Gstin, &organization.State, &organization.Pan, &organization.UserID, &organization.ParentID); err != nil {
+			if err == sql.ErrNoRows {
+				return nil, fmt.Errorf("no organisations to fetch")
+			}
+			return nil, err
+		}
+		organizations = append(organizations, organization)
+	}
+	// fmt.Println(rows)
+	return organizations, nil
+}
+
 // GetOrganizationByName implements repointer.RepoInter.
 func (r *RepoImpl) GetByName(name string) (*models.Organization, error) {
 	var organization models.Organization
 	row := utils.DB.QueryRow("select * from organizations where legal_name=?", name)
-	if err := row.Scan(&organization.ID,&organization.LegalName, &organization.Alias, &organization.Country, &organization.Currency, &organization.Gstreg, &organization.Gstin, &organization.State, &organization.Pan); err != nil {
+	if err := row.Scan(&organization.ID, &organization.LegalName, &organization.Alias, &organization.Country, &organization.Currency, &organization.Gstreg, &organization.Gstin, &organization.State, &organization.Pan, &organization.UserID, &organization.ParentID); err != nil {
 		if err == sql.ErrNoRows {
 			return nil, fmt.Errorf("organizationByName %s: no such organization", name)
 		}

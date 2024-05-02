@@ -81,8 +81,23 @@ func (o *Handler) GetByID(c *gin.Context) {
 }
 func (o *Handler) GetByName(c *gin.Context) {
 	name := c.DefaultQuery("name", "")
-	// fmt.Println(name)
 	res, err := o.SVC.GetByName(name)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status":  "failed",
+			"message": "Error finding the organization- handler",
+			"data":    err.Error(),
+		})
+		return
+	}
+	c.JSON(http.StatusAccepted, gin.H{
+		"status":  "success",
+		"message": "Successfully found the Organization",
+		"data":    res,
+	})
+}
+func (o *Handler) GetAll(c *gin.Context) {
+	res, err := o.SVC.GetAll()
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status":  "failed",
